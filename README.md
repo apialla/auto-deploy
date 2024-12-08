@@ -1,0 +1,1 @@
+This project is to showcase how can we deploy all development configuration to qa environment. APISIX is used as a pilot as it contains different use-cases that's needed all to be covered to ensure the script is valid.

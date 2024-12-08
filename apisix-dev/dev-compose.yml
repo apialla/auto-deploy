@@ -1,0 +1,38 @@
+version: "3"
+services:
+  apisix.saqal.dev:
+    image: apache/apisix:${APISIX_IMAGE_TAG:-3.11.0-debian}
+    container_name: apisix.saqal.dev
+    restart: always
+    volumes:
+      - ./apisix_conf/config.yaml:/usr/local/apisix/conf/config.yaml:ro
+      - dev_apis:/usr/local/apisix/apis
+    depends_on:
+      - etcd.dev
+    ports:
+      - "9180:9180/tcp"
+      - "9080:9080/tcp"
+      - "9091:9091/tcp"
+    networks:
+      - saqal_network_dev
+
+  etcd.dev:
+    image: bitnami/etcd:3.5.11
+    container_name: etcd.dev
+    restart: always
+    environment:
+      ETCD_ENABLE_V2: "true"
+      ALLOW_NONE_AUTHENTICATION: "yes"
+      ETCD_ADVERTISE_CLIENT_URLS: "http://etcd.dev:2379"
+      ETCD_LISTEN_CLIENT_URLS: "http://0.0.0.0:2379"
+    ports:
+      - "2379:2379/tcp"
+    networks:
+      - saqal_network_dev
+
+volumes:
+  dev_apis:
+
+networks:
+  saqal_network_dev:
+    external: true

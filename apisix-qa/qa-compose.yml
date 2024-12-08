@@ -1,0 +1,35 @@
+version: "3"
+
+services:
+  apisix.saqal.qa:
+    image: apisix.saqal.qa:latest
+    container_name: apisi.saqal.qa
+    ports:
+    - "29080:9080"
+    - "29180:9180"
+    - "29091:9091"
+    - "29443:9443"
+    - "29092:9092"
+    volumes:
+      - ./apisix_conf/config.yaml:/usr/local/apisix/conf/config.yaml:ro  # Mount config file
+    depends_on:
+      - etcd.qa
+    networks:
+      - saqal_network_qa
+      
+  etcd.qa:
+    image: etcd.qa:latest
+    container_name: etcd.qa
+    ports:
+      - "22379:2379/tcp"
+    environment:
+      ETCD_ENABLE_V2: "true"
+      ALLOW_NONE_AUTHENTICATION: "yes"
+      ETCD_ADVERTISE_CLIENT_URLS: "http://etcd.qa:2379"
+      ETCD_LISTEN_CLIENT_URLS: "http://0.0.0.0:2379"
+    networks:
+      - saqal_network_qa
+
+networks:
+  saqal_network_qa:
+    external: true
